@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/balboa'
+require_relative '../lib/balboa/cli/parser_builder'
+require_relative '../lib/balboa/interactor/interactor_builder'
+
+require 'highline/import'
+
+options = if File.exist?(Balboa::CONFIG_FILE)
+  YAML.load_file(Balboa::CONFIG_FILE)
+else
+  Balboa::CLI::Defaults.prompt(HighLine)
+end
+
+Balboa::CLI::ParserBuilder.create(ARGV, options).parse!
+
+raw_interactor = Balboa::Interactor::InteractorBuilder.create(options)
+interactor = Balboa::Interactor::InteractorWrapper.new(raw_interactor)
+
+app_last = Balboa::CLI::Command::LastCommand.new(interactor)
+app_punch = Balboa::CLI::Command::PunchCommand.new(interactor, HighLine)
+app_reset = Balboa::CLI::Command::ResetCommand.new
+app_star_wars = Balboa::CLI::Command::StarWarsCommand.new
+
+command = ARGV.first
+app = Balboa::CLI::Application.new(command)
+app.add_command(:last, app_last)
+app.add_command(:punch, app_punch)
+app.add_command(:reset, app_reset)
+app.add_command(:star_wars, app_star_wars)
+
+begin
+  app.execute
+rescue Balboa::CLI::Application::CommandNotFound
+  $stdout.puts("\nCommand Not Found!")
+  $stdout.puts("\nRun `balboa -h' to check available commands and options.")
+rescue Balboa::Interactor::Command::LoginCommand::LoginFailure
+  $stdout.puts("\nWrong e-mail or password!")
+end
