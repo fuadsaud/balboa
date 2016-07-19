@@ -1,0 +1,4 @@
+Style/RedundantFreeze:
+  Enabled: false
+Documentation:
+  Enabled: false
