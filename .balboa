@@ -1,0 +1,16 @@
+---
+email: waldyr.araujo@codeminer42.com
+password: waldyr.araujo@codeminer42.com
+project: 'API Market Place'
+start_at: '08:00'
+lunch_at: '12:00'
+restart_at: '13:00'
+leave_at: '17:00'
+holidays:
+  - 12/06/1992
+  - 12/06/1992
+  - 12/06/1992
+  - 12/06/1992
+  - 12/06/1992
+  - 12/06/1992
+  - 12/06/1992

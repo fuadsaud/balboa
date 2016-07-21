@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/balboa'
+
+command = ARGV.shift || 'make_punch'
+app = Balboa::CLI::Application.new(command)
+options = Balboa::CLI::Options.parse(ARGV)
+
+crawler = Balboa::Interactor::CapybaraInteractor.new(options)
+
+crawler_last_punch = Balboa::Interactor::Command::LastPunchCommand.new
+crawler_make_punch = Balboa::Interactor::Command::MakePunchCommand.new(options)
+crawler_login      = Balboa::Interactor::Command::LoginCommand.new(options)
+
+crawler.add_command :last_punch, crawler_last_punch
+crawler.add_command :make_punch, crawler_make_punch
+crawler.add_command :login,      crawler_login
+
+interactor = Balboa::Interactor::InteractorWrapper.new(crawler)
+
+app_last_punch = Balboa::CLI::Command::LastPunchCommand.new(interactor)
+app_make_punch = Balboa::CLI::Command::MakePunchCommand.new(interactor, options['holidays'])
+app_star_wars = Balboa::CLI::Command::StarWarsCommand.new
+
+app.add_command :last_punch, app_last_punch
+app.add_command :make_punch, app_make_punch
+app.add_command :star_wars,  app_star_wars
+
+puts app.execute
