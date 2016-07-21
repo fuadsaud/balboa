@@ -34,7 +34,7 @@ namespace :test do
         --include lib\
         --require balboa\
         --use rspec\
-        --since master\
+        --since master^\
         --jobs 4 'Balboa*'
     EOS
     system command

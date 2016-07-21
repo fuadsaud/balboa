@@ -22,4 +22,7 @@ Gem::Specification.new do |s|
   s.default_executable = 'balboa'
 
   s.required_ruby_version = '>= 2.0'
+
+  s.add_runtime_dependency 'capybara',    '~> 2.7.1'
+  s.add_runtime_dependency 'phantomjs',   '~> 2.1.1.0'
 end

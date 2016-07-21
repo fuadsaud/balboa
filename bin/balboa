@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/balboa'
+
+command = ARGV.shift || :help
+app = Balboa::CLI::Application.new(command)
+options = Balboa::CLI::Options.parse(ARGV)
+
+raw_interactor = Balboa::Interactor::CapybaraInteractor.new
+
+Balboa::Interactor::InteractorBuilder.create(raw_interactor, options)
+
+interactor = Balboa::Interactor::InteractorWrapper.new(raw_interactor)
+
+app_last = Balboa::CLI::Command::LastCommand.new(interactor)
+app_punch = Balboa::CLI::Command::PunchCommand.new(interactor, options['holidays'])
+app_help = Balboa::CLI::Command::HelpCommand.new
+app_star_wars = Balboa::CLI::Command::StarWarsCommand.new
+
+app.add_command(:last, app_last)
+app.add_command(:punch, app_punch)
+app.add_command(:help, app_help)
+app.add_command(:star_wars, app_star_wars)
+
+app.execute
